@@ -8,7 +8,7 @@ from .commands import Commands
 class GcodeLine:
     command: Tuple[str, int]
     params: Dict[str, float]
-    comment: str
+    comment: str = ''
 
     def __post_init__(self):
         if self.command[0] == 'G' and self.command[1] in (0, 1, 2, 3):
@@ -36,6 +36,14 @@ class GcodeLine:
                 return return_type(self.params[param])
         except KeyError:
             return default
+
+    def add_param(self, param: str, value: Union[int, float]):
+        if type(param) != str:
+            raise TypeError(f"Type {type(param)} is not a valid parameter type")
+        if type(value) not in (int, float):
+            raise TypeError(f"Type {type(value)} is not a valid parameter type")
+        self.params[param] = value
+        return self.get_param(param)
 
     def update_param(self, param: str, value: Union[int, float]):
         if self.get_param(param) is None:
