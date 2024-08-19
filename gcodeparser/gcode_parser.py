@@ -6,9 +6,11 @@ from .commands import Commands
 
 @dataclass
 class GcodeLine:
-    command: Tuple[str, int]
-    params: Dict[str, float]
-    comment: str = ''
+    
+    def __init__(self, command: Tuple[str, int], params:Dict[str, float], comment:str=""):
+        self.command = command
+        self.params = params
+        self.comment = comment
 
     def __post_init__(self):
         if self.command[0] == 'G' and self.command[1] in (0, 1, 2, 3):
