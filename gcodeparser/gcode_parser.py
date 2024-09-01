@@ -29,6 +29,9 @@ class GcodeLine:
             return f"{self.command[0]}{self.command[1] if self.command[1] is not None else ''}"
         return ''
 
+    def copy(self):
+        return GcodeLine(self.command, self.params.copy(), self.comment)
+
 
     def get_param(self, param: str, return_type=None, default=None):
         """
@@ -89,9 +92,13 @@ class GcodeParser:
 
 def save_gcode(gcodelines: List[GcodeLine], path: str):
     """ Sauvegarde une liste de GcodeLine dans un fichier .gc """
-    with open(path, 'w') as f:
-        for line in gcodelines:
-            f.write(line.gcode_str + '\n')
+    try:
+        with open(path, 'w') as f:
+            for line in gcodelines:
+                f.write(line.gcode_str + '\n')
+        print(f"Gcode saved: {path}")
+    except Exception as err:
+        print(err)
 
 
 def get_lines(gcode, include_comments=False):
