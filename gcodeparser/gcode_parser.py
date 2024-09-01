@@ -84,7 +84,7 @@ class GcodeLine:
 class GcodeParser:
     def __init__(self, gcode: str, include_comments=False):
         self.gcode = gcode
-        self.lines: List[GcodeLine] = _get_lines(self.gcode, include_comments)
+        self.lines: List[GcodeLine] = get_lines(self.gcode, include_comments)
         self.include_comments = include_comments
 
 def save_gcode(gcodelines: List[GcodeLine], path: str):
@@ -94,7 +94,7 @@ def save_gcode(gcodelines: List[GcodeLine], path: str):
             f.write(line.gcode_str + '\n')
 
 
-def _get_lines(gcode, include_comments=False):
+def get_lines(gcode, include_comments=False):
     regex = r'(?!; *.+)(G|M|T|g|m|t)(\d+)(([ \t]*(?!G|M|g|m)\w(".*"|([-+\d\.]*)))*)[ \t]*(;[ \t]*(.*))?|;[ \t]*(.+)'
     regex_lines = re.findall(regex, gcode)
     lines = []
@@ -102,7 +102,7 @@ def _get_lines(gcode, include_comments=False):
         if line[0]:
             command = (line[0].upper(), int(line[1]))
             comment = line[-2]
-            params = _split_params(line[2])
+            params = split_params(line[2])
 
         elif include_comments:
             command = (';', None)
@@ -122,7 +122,7 @@ def _get_lines(gcode, include_comments=False):
     return lines
 
 
-def _element_type(element: str):
+def element_type(element: str):
     if re.search(r'"', element):
         return str
     if re.search(r'\..*\.', element):
@@ -132,7 +132,7 @@ def _element_type(element: str):
     return int
 
 
-def _split_params(line):
+def split_params(line):
     regex = r'((?!\d)\w+?)(".*"|(\d+\.?)+|[-+]?\d*\.?\d*)'
     elements = re.findall(regex, line)
     params = {}
@@ -140,7 +140,7 @@ def _split_params(line):
         if element[1] == '':
             params[element[0].upper()] = True
             continue
-        params[element[0].upper()] = _element_type(element[1])(element[1])
+        params[element[0].upper()] = element_type(element[1])(element[1])
 
     return params
 
