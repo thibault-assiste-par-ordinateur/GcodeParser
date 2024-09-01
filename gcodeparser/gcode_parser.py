@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from typing import List, Dict, Tuple, Union
 from dataclasses import dataclass
 import re
@@ -24,13 +26,10 @@ class GcodeLine:
 
     @property
     def command_str(self):
-        if self.command:
-            if type(self.command) == 'str':
-                return f"{self.command}"
-            else:
-                return f"{self.command[0]}{self.command[1] if self.command[1] is not None else ''}"
+        if type(self.command) == str:
+            return f"{self.command}"
         else:
-            return ''
+            return f"{self.command[0]}{self.command[1] if self.command[1] is not None else ''}"
 
     def get_param(self, param: str, return_type=None, default=None):
         """
