@@ -24,10 +24,13 @@ class GcodeLine:
 
     @property
     def command_str(self):
-        if type(self.command) == 'str':
-            return f"{self.command}"
+        if self.command:
+            if type(self.command) == 'str':
+                return f"{self.command}"
+            else:
+                return f"{self.command[0]}{self.command[1] if self.command[1] is not None else ''}"
         else:
-            return f"{self.command[0]}{self.command[1] if self.command[1] is not None else ''}"
+            return ''
 
     def get_param(self, param: str, return_type=None, default=None):
         """
