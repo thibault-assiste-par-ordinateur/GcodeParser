@@ -7,7 +7,7 @@ from .commands import Commands
 @dataclass
 class GcodeLine:
     
-    def __init__(self, command: Tuple[str, int], params:Dict[str, float], comment:str=""):
+    def __init__(self, command: Tuple[str, int] = ';', params:Dict[str, float]={}, comment:str=""):
         self.command = command
         self.params = params
         self.comment = comment
@@ -24,7 +24,10 @@ class GcodeLine:
 
     @property
     def command_str(self):
-        return f"{self.command[0]}{self.command[1] if self.command[1] is not None else ''}"
+        if type(self.command) == 'str':
+            return f"{self.command}"
+        else:
+            return f"{self.command[0]}{self.command[1] if self.command[1] is not None else ''}"
 
     def get_param(self, param: str, return_type=None, default=None):
         """
